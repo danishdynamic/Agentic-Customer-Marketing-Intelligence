@@ -1,1 +1,1 @@
-# Agenctic Marketing Intelligence 
+# LLM Ops in Marketing Intelligence
