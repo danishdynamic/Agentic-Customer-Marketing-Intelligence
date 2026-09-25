@@ -163,4 +163,5 @@ def answer_query(
         "intent": retrieval["intent"],
         "answer": answer,
         "retrieval": retrieval,
+        "context": context,
     }

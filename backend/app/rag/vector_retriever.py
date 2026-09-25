@@ -10,7 +10,16 @@ def vector_search(
     query: str,
     top_k: int = 5,
 ):
+    # Use generate_embedding for a single string to get a 1D list[float]
     query_embedding = generate_embedding(query)
+
+    # Defensive check: unwrap if it's accidentally wrapped in an outer list
+    if (
+        isinstance(query_embedding, list)
+        and len(query_embedding) > 0
+        and isinstance(query_embedding[0], list)
+    ):
+        query_embedding = query_embedding[0]
 
     distance = AdDocument.embedding.cosine_distance(
         query_embedding

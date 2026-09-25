@@ -1,11 +1,9 @@
 def classify_query(query: str) -> str:
     query_lower = query.lower()
 
-    sql_keywords = [
+    sql_signals = [
         "highest",
         "lowest",
-        "best",
-        "worst",
         "average",
         "total",
         "count",
@@ -20,7 +18,7 @@ def classify_query(query: str) -> str:
         "platform",
     ]
 
-    semantic_keywords = [
+    semantic_signals = [
         "message",
         "messaging",
         "headline",
@@ -34,18 +32,48 @@ def classify_query(query: str) -> str:
         "theme",
         "themes",
         "positioning",
+        "characteristics",
     ]
 
     has_sql = any(
-        keyword in query_lower
-        for keyword in sql_keywords
+        signal in query_lower
+        for signal in sql_signals
     )
 
     has_semantic = any(
-        keyword in query_lower
-        for keyword in semantic_keywords
+        signal in query_lower
+        for signal in semantic_signals
     )
 
+    # Explicit semantic-only questions
+    semantic_only_patterns = [
+        "use urgency",
+        "use premium",
+        "use discount",
+        "use social proof",
+        "messaging",
+        "messaging.",
+        "language",
+        "tone",
+    ]
+
+    if any(
+        pattern in query_lower
+        for pattern in semantic_only_patterns
+    ) and not any(
+        metric in query_lower
+        for metric in [
+            "roas",
+            "ctr",
+            "cpa",
+            "spend",
+            "conversions",
+        ]
+    ):
+        return "vector"
+
+    # Hybrid when structured constraints
+    # and semantic requirements coexist.
     if has_sql and has_semantic:
         return "hybrid"
 

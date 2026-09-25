@@ -119,3 +119,49 @@ def filtered_ads(
     )
 
     return db.scalars(statement).all()
+
+
+def retrieve_sql(
+    db: Session,
+    query: str,
+    intent: dict,
+    top_k: int = 5,
+):
+    query_lower = query.lower()
+
+    # -------------------------
+    # Highest ROAS
+    # -------------------------
+
+    if "highest roas" in query_lower:
+        return highest_roas(
+            db=db,
+            platform=intent.get("platform"),
+            top_k=top_k,
+        )
+
+    # -------------------------
+    # Lowest CPA
+    # -------------------------
+
+    if "lowest cpa" in query_lower:
+        return lowest_cpa(
+            db=db,
+            platform=intent.get("platform"),
+            top_k=top_k,
+        )
+
+    # -------------------------
+    # Filtered SQL retrieval
+    # -------------------------
+
+    return filtered_ads(
+        db=db,
+        platform=intent.get("platform"),
+        marketing_angle=intent.get("marketing_angle"),
+        min_roas=intent.get("min_roas"),
+        max_roas=intent.get("max_roas"),
+        min_ctr=intent.get("min_ctr"),
+        max_cpa=intent.get("max_cpa"),
+        top_k=top_k,
+    )
